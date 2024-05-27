@@ -5,6 +5,7 @@
 
 #define maxName 50
 #define epsilon 0.001
+#define runde 5
 
 typedef struct main
 {

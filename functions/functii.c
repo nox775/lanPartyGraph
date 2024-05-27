@@ -37,7 +37,6 @@ void printPrestigiu(FILE *file, Node *ClasamentList)
 {
     float pr;
     float q = 0.15;
-    float runde = 5;
     while (ClasamentList)
     {
         pr = (q * powf(2 - q, ClasamentList->val.victorii)) / (powf(2, runde + 1) + powf(2 - q, runde + 1) * (q - 1));

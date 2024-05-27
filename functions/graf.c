@@ -77,7 +77,7 @@ Graph *makeGraph(Graph *campionat, Queue *games, int nr_games, Node **ClasamentL
 {
     Queue *WinQ = createQueue();
 
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < runde; i++)
     {
         campionat = makeBattle(games, nr_games, campionat, &WinQ, ClasamentList);
         nr_games = nr_games / 2;
