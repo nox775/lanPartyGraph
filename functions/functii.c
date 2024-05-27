@@ -1,29 +1,15 @@
 #include "../main.h"
 #include "../headers/functii.h"
 #include "../headers/queue.h"
-#include "../headers/stack.h"
+#include "../headers/liste.h"
 
-void addToListFromFile(Node **head, FILE *fin)
+void fileOpenVerification(FILE *file)
 {
-    // scrie din fisier in lista
-    for (int i = 0; i < 32; i++)
+    if (file == NULL)
     {
-        Node *newNode = (Node *)malloc(sizeof(Node));
-
-        newNode->val.nume = (char *)malloc(maxName * sizeof(char));
-
-        if (!newNode->val.nume)
-        {
-            printf("Memory allocation failed\n");
-            exit(-1);
-        }
-
-        fscanf(fin, "%f %[^\n]", &(newNode->val.scor), newNode->val.nume);
-        newNode->val.pozitie = i;
-        newNode->val.victorii = 0;
-
-        newNode->next = *head;
-        *head = newNode;
+        printf("File doesnt open");
+        perror("Fille Error");
+        exit(-1);
     }
 }
 
@@ -36,7 +22,7 @@ int VersusWinner(team t1, team t2)
 {
     if (float_equal(t1.scor, t2.scor))
     {
-        if (strcmp(t1.nume, t2.nume) < 0) // posibila greseala
+        if (strcmp(t1.nume, t2.nume) > 0)
             return 1;
         else
             return 0;
@@ -45,4 +31,17 @@ int VersusWinner(team t1, team t2)
         return 1;
     else
         return 0;
+}
+
+void printPrestigiu(FILE *file, Node *ClasamentList)
+{
+    float pr;
+    float q = 0.15;
+    float runde = 5;
+    while (ClasamentList)
+    {
+        pr = (q * powf(2 - q, ClasamentList->val.victorii)) / (powf(2, runde + 1) + powf(2 - q, runde + 1) * (q - 1));
+        fprintf(file, "%.4f %s\n", pr, ClasamentList->val.nume);
+        ClasamentList = ClasamentList->next;
+    }
 }

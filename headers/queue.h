@@ -3,5 +3,7 @@ int isEmptyQueue(Queue *);
 void enQueue(Queue *, team);
 Queue *createQueue();
 void QueueExtractFromList(Queue **, Node *);
-void QueueExtractFromStack(Queue **, Node *);
 void deleteQueue(Queue *);
+Queue *copyQueue(Queue *);
+void reverseQueue(Queue *);
+void copyQueueToList(Queue *, Node **);

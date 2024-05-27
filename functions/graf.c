@@ -2,7 +2,7 @@
 #include "../headers/graf.h"
 #include "../headers/functii.h"
 #include "../headers/queue.h"
-#include "../headers/stack.h"
+#include "../headers/liste.h"
 
 Graph *create()
 {
@@ -39,45 +39,60 @@ void printGraph(Graph *g, FILE *file)
     }
 }
 
-Graph *makeBattle(Queue *QueueGames, int nr_games, Graph *g, Node **WinStack)
+Graph *makeBattle(Queue *QueueGames, int nr_games, Graph *g, Queue **WinQ, Node **ClasamentList)
 {
 
     team team1, team2;
+    Queue *LoseQ = createQueue();
 
     for (int i = 1; i <= nr_games; i++)
     {
         team1 = deQueue(QueueGames);
         team2 = deQueue(QueueGames);
 
-        if (VersusWinner(team1, team2) == 1)
+        if (VersusWinner(team1, team2) == 1) // functii.c
         {
             team1.victorii++;
             g->a[team2.pozitie][team1.pozitie] = 1;
             g->E++;
-            push(WinStack, team1);
+            enQueue(*WinQ, team1);
+            enQueue(LoseQ, team2);
         }
         else
         {
             team2.victorii++;
             g->a[team1.pozitie][team2.pozitie] = 1;
             g->E++;
-            push(WinStack, team2);
+            enQueue(*WinQ, team2);
+            enQueue(LoseQ, team1);
         }
     }
+
+    copyQueueToList(LoseQ, ClasamentList); // queue.c
+
     return g;
 }
 
-Graph *makeGraph(Graph *campionat, Queue *games, Node *WinStack, int nr_games)
+Graph *makeGraph(Graph *campionat, Queue *games, int nr_games, Node **ClasamentList)
 {
+    Queue *WinQ = createQueue();
 
     for (int i = 0; i < 5; i++)
     {
-        campionat = makeBattle(games, nr_games, campionat, &WinStack);
+        campionat = makeBattle(games, nr_games, campionat, &WinQ, ClasamentList);
         nr_games = nr_games / 2;
+
         deleteQueue(games);
         games = createQueue();
-        QueueExtractFromStack(&games, WinStack);
-        deleteStack(&WinStack);
+
+        games = copyQueue(WinQ);
+
+        if (i == 4)
+        {
+            addAtEnd(ClasamentList, deQueue(WinQ));
+        }
+        deleteQueue(WinQ);
+        WinQ = createQueue();
     }
     return campionat;
 }

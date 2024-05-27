@@ -1,4 +1,5 @@
-void addToListFromFile(Node **, FILE *);
+void fileOpenVerification(FILE *);
 int float_equal(float, float);
 int VersusWinner(team, team);
-void deleteList(Node **);
+
+void printPrestigiu(FILE *, Node *);

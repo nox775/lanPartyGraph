@@ -1,7 +1,6 @@
 #include "../main.h"
 #include "../headers/queue.h"
-#include "../headers/stack.h"
-
+#include "../headers/liste.h"
 Queue *createQueue()
 {
     Queue *q;
@@ -73,13 +72,39 @@ void QueueExtractFromList(Queue **QueueGames, Node *listTeams)
     }
 }
 
-void QueueExtractFromStack(Queue **QueueGames, Node *WinStack)
+Queue *copyQueue(Queue *q)
 {
-    // Pune in coada echipele victorioase din stiva
-    while (WinStack != NULL)
+    if (q == NULL)
     {
-        enQueue(*QueueGames, WinStack->val);
-        WinStack = WinStack->next;
+        return NULL;
     }
-    deleteStack(&WinStack);
+    Queue *newQueue = createQueue();
+    Node *current = q->front;
+
+    while (current != NULL)
+    {
+        enQueue(newQueue, current->val);
+        current = current->next;
+    }
+    return newQueue;
+}
+
+void reverseQueue(Queue *q)
+{
+    if (isEmptyQueue(q))
+    {
+        return;
+    }
+    team temp = deQueue(q);
+    reverseQueue(q);
+    enQueue(q, temp);
+}
+
+void copyQueueToList(Queue *LoseQ, Node **ClasamentList)
+{
+    reverseQueue(LoseQ);
+    while (!isEmptyQueue(LoseQ))
+    {
+        addAtEnd(ClasamentList, deQueue(LoseQ));
+    }
 }
